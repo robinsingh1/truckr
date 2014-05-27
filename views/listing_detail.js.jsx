@@ -8,10 +8,11 @@ var ListingDetail = React.createClass({
   },
 
   componentWillMount: function(){
+    localStorage.listing = "{}"
   },
 
   render: function(){
-    //console.log(lst)
+    lst = JSON.parse(localStorage.listing)
     return (
         <div id="view-2" className="view tab">
         <div className="navbar">
