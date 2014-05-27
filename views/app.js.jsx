@@ -7,7 +7,7 @@ var truck_listings = React.createClass({
 
   componentDidMount: function(){
     Parse.initialize("aIHDo506A6fdlZ7YZB6n93EZQeBvV8wBFsArgIYB", "wWQnUcWjA7ARW2s5n6zSfv52ypp1d7PmyMSoLxDh")
-    var q2 = new Parse.Query(Parse.Object.extend('Listings'));
+    var q2 = new Parse.Query(Parse.Object.extend('autotraderListings'));
     _this = this
     q2.find({ 
       success: function(items){
@@ -20,48 +20,45 @@ var truck_listings = React.createClass({
   render: function(){
     listings = []
     for(i=0;i<this.state.listings.length;i++){
-      listings.push(<listing listing={this.state.listings[i]}/>)
+      listings.push(<listing updateListing={this.props.updateListing} listing={this.state.listings[i]}/>)
     }
     return (
       <div>
-        <div className="content-block-title">Songs</div>
+        <div className="content-block-title">&nbsp;</div>
         <div className="list-block media-list">
-          <ul>
-            {listings}
-          </ul>
+          <ul> {listings} </ul>
         </div>
       </div>
     );
   },
-  componentDidUpdate: function(){
-    console.log('called')
-    $('.truck_listing').on('click',function(){
-      console.log('jquery click bitch')
-      window.location.href = "#view-2"
-    });
-  },
+
 });
 
 var listing = React.createClass({
   clicked: function(){
     console.log('clicked')
+      $('#view-2').show()
+      $('#view-3').hide()
+    
+    localStorage.listing = JSON.stringify(this.props.listing)
+    this.props.updateListing(this.props.listing)
   },
 
   render: function(){
     lst = this.props.listing
     return (
         <li>
-          <a href="listing_detail.html" onClick={this.clicked} className="truck_listing item-link item-content">
+          <a href="#" onClick={this.clicked} data-view="" className="truck_listing item-link item-content">
             <div className="item-media">
-              <img src="" width="80" src={lst.get('small_picture')._url}/>
+              <img src="" width="80" src={lst.get('small_pic')}/>
             </div>
             <div className="item-inner">
               <div className="item-title-row">
-                <div className="item-title">Yellow Submarine</div>
-                <div className="item-after">$15</div>
+                <div className="item-title">{lst.get('property1')}</div>
+                <div className="item-after">{lst.get('property2')}</div>
               </div>
-              <div className="item-subtitle">Beatles</div>
-              <div className="item-text">Lorem ipsum dolor sit amet...</div>
+              <div className="item-subtitle">&nbsp;</div>
+              <div className="item-text">{lst.get('property3')}</div>
             </div>
           </a>
         </li>
@@ -70,6 +67,25 @@ var listing = React.createClass({
 });
 
 var App = React.createClass({
+  getInitialState: function(){
+    return {currentListing: []};
+  },
+  componentDidMount: function(){
+    $('#search').on('click', function(){
+      $('#view-1').show()
+      $('#view-3').hide()
+      $('#view-2').hide()
+    });
+
+    $('#listing').on('click', function(){
+      $('#view-1').hide()
+      $('#view-3').show()
+      $('#view-2').hide()
+    });
+  },
+  updateListing: function(listing){
+    this.setState({currentListing: listing})
+  },
   render: function(){
     return (
     <div style={{height:"100%"}}>
@@ -88,46 +104,26 @@ var App = React.createClass({
         </div>
 
     <div className="views tabs toolbar-through">
-      <div id="view-4" className="view view-main tab active">
+      <ListingDetail currentListing={this.state.currentListing}/>
+      <searchResults />
+
+      <div id="view-3" className="view view-main tab active">
         <div className="pages">
           <div data-page="index-1" className="page">
-            <div className="page-content">
-              <div className="content-block-title">Welcome</div>
-              <div className="content-block">
-                <p>This is an example of tab bar application layout.</p>
-                <p>Each tab/view may have different layout, different </p>
-                <p>And of course, your favorite panels are still here: </p>
-                <p>Icons and their labels in tab bar below are just for example and don't related to their content.</p>
+            <div className="navbar">
+              <div className="navbar-inner">
+                <div className="center sliding">Listings</div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-      <div id="view-2" className="view tab">
-        <ListingDetail />
-      </div>
-
-      <div id="view-3" className="view tab">
-        <div className="pages">
-          <div data-page="index-3" className="page">
-        <div className="navbar">
-          <div className="navbar-inner">
-            <div className="center sliding">Listings</div>
-          </div>
-        </div>
             <div className="page-content">
               <div className="content-block" style={{padding:"0px"}}>
-
-
-          <truck_listings />
-
-
+                <truck_listings updateListing={this.updateListing}/>
               </div>
             </div>
           </div>
         </div>
       </div>
+
       <div id="view-1" className="view tab">
         <div className="pages navbar-fixed">
           <div data-page="index-4" className="page">
@@ -147,7 +143,10 @@ var App = React.createClass({
                       <div className="item-inner">
                         <div className="item-title label">Location</div>
                         <div className="item-input">
-                          <input type="text" placeholder="Select Province" />
+                          <select>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -158,7 +157,10 @@ var App = React.createClass({
                       <div className="item-inner">
                         <div className="item-title label">New Or Used?</div>
                         <div className="item-input">
-                          <input type="email" placeholder="E-mail" />
+                          <select>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -169,7 +171,10 @@ var App = React.createClass({
                       <div className="item-inner">
                         <div className="item-title label">Type</div>
                         <div className="item-input">
-                          <input type="url" placeholder="URL" />
+                          <select>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -180,7 +185,10 @@ var App = React.createClass({
                       <div className="item-inner">
                         <div className="item-title label">Make</div>
                         <div className="item-input">
-                          <input type="password" placeholder="Password" />
+                          <select>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -191,7 +199,10 @@ var App = React.createClass({
                       <div className="item-inner">
                         <div className="item-title label">Price</div>
                         <div className="item-input">
-                          <input type="tel" placeholder="Phone" />
+                          <select>
+                            <option>Male</option>
+                            <option>Female</option>
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -213,7 +224,7 @@ var App = React.createClass({
                 </ul>
               </div>
               <div className="content-block">
-      <a href="#" onClick={this.handleClick} data-panel="left" className="button alert-text">Search!</a>
+                <a href="#" onClick={this.handleSearchClick} data-panel="left" className="button button-big button-submit">Search!</a>
               </div>
             </div>
           </div>
@@ -221,11 +232,10 @@ var App = React.createClass({
       </div>
       <div className="toolbar tabbar tabbar-labels">
         <div className="toolbar-inner">
-          <a href="#view-1" className="tab-link">
+          <a href="#view-1" className="tab-link" id="search">
             <i className="icon tabbar-demo-icon-1"></i>
             <span className="tabbar-label">Search</span></a>
-            
-          <a href="#view-3" className="tab-link active">
+          <a href="#view-3" className="tab-link active" id="listing">
             <i className="icon tabbar-demo-icon-3" />
             <span className="tabbar-label">Listings</span>
           </a>
@@ -234,8 +244,12 @@ var App = React.createClass({
     </div>
     </div>
     )
-  }
-  //<i className="icon tabbar-demo-icon-3"><span className="badge badge-red">4</span></i>
+  },
+
+  handleSearchClick: function(){
+    //form validation
+    //
+  },
   /*
           <a href="#view-2" className="tab-link">
             <i className="icon tabbar-demo-icon-2"></i>
@@ -246,6 +260,15 @@ var App = React.createClass({
               <span className="tabbar-label">Photos</span>
             </a>
   */
+});
+
+var searchResults = React.createClass({
+  render: function(){
+    return (
+      <div>
+      </div>
+    )
+  }
 });
 
 React.renderComponent(<App />, document.getElementById('content'));

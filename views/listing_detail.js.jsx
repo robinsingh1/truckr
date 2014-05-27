@@ -1,20 +1,30 @@
 /** @jsx React.DOM */
 
 var ListingDetail = React.createClass({
+  getInitialState: function(){
+    return {listing: JSON.parse(localStorage.listing)}
+  },
+
   goHome: function(){ 
-    window.location.href="index.html"
+    console.log('go home')
+    $('#view-2').hide()
+    $('#view-3').show()
+  },
+
+  componentWillMount: function(){
   },
 
   render: function(){
+    lst = JSON.parse(localStorage.listing)
+    console.log(lst)
     return (
-      <div className="views tabs toolbar-through">
-        <div id="view-1" className="view view-main tab active">
+        <div id="view-2" className="view tab">
         <div className="navbar">
           <div className="navbar-inner">
           <div className="left">
-            <a href="/" onClick={this.goHome} className="back link"><i className="icon icon-back-blue"></i><span>Back</span></a></div>
+            <a href="#" onClick={this.goHome} className="back link"><i className="icon icon-back-blue"></i><span>Back</span></a></div>
               <div className="center sliding" style={{marginRight:'auto',marginLeft:'auto',paddingRight:'60px'}}>
-              Listing Detail
+              {JSON.parse(localStorage.listing).property1}
             </div>
           </div>
         </div>
@@ -24,14 +34,13 @@ var ListingDetail = React.createClass({
               <div className="page-content">
                 <div className="content-block-title">&nbsp;</div>
                 <div className="content-block">
-
                 <div className="content-block-inner">
                 <div className="row">
-                <div className="col-50"></div>
-                <div className="col-50">
-                <p>Couple of worlds here because my app is so awesome!</p>
-                <p>Duis sed erat ac eros ultrices pharetra id ut tellus. Praesent rhoncus enim ornare ipsum aliquet ultricies. Pellentesque sodales erat quis elementum sagittis.</p>
+                    <img style={{width:"100%"}} src={lst.big_pic} />
                 </div>
+
+                <div className="row">
+                  <p>{lst.property3}</p>
                 </div>
                 </div>
 
@@ -50,7 +59,6 @@ var ListingDetail = React.createClass({
             </div>
           </div>
         </div>
-      </div>
     );
   }
 });
@@ -75,7 +83,7 @@ var interestedButton = React.createClass({
   render: function(){
     return (
       <div>
-      <a href="#" onClick={this.handleClick} data-panel="left" className="button alert-text">I'm Interested</a>
+      <a href="#" onClick={this.handleClick} data-panel="left" className="button button-big button-submit">I'm Interested</a>
       </div>
     );
   }
