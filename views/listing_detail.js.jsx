@@ -1,10 +1,6 @@
 /** @jsx React.DOM */
 
 var ListingDetail = React.createClass({
-  getInitialState: function(){
-    return {listing: JSON.parse(localStorage.listing)}
-  },
-
   goHome: function(){ 
     console.log('go home')
     $('#view-2').hide()
