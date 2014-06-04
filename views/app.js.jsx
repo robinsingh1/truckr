@@ -7,7 +7,7 @@ var truck_listings = React.createClass({
 
   componentDidMount: function(){
     Parse.initialize("aIHDo506A6fdlZ7YZB6n93EZQeBvV8wBFsArgIYB", "wWQnUcWjA7ARW2s5n6zSfv52ypp1d7PmyMSoLxDh")
-    var q2 = new Parse.Query(Parse.Object.extend('autotraderListings'));
+    var q2 = new Parse.Query(Parse.Object.extend('tmp_listings'));
     _this = this
     q2.find({ 
       success: function(items){
@@ -40,8 +40,22 @@ var listing = React.createClass({
       $('#view-2').show()
       $('#view-3').hide()
     
-    localStorage.listing = JSON.stringify(this.props.listing)
+    console.log(this.props.listing.get('listing_url'))
+    localStorage.listing = JSON.stringify(this.props.listing.attributes)
+    objectId = this.props.listing.get('stats').id
     this.props.updateListing(this.props.listing)
+
+    thiss = this;
+    $.ajax({
+      type:'GET',
+      url: "https://api.parse.com/1/classes/tmp_stats/"+objectId,
+      headers:{"X-Parse-Application-Id": "aIHDo506A6fdlZ7YZB6n93EZQeBvV8wBFsArgIYB",
+               "X-Parse-REST-API-Key": "uh3i9ceRbn19xJubtw9EuAgYhto7vgmNnHzfEJZ2" 
+      },
+    }).success(function(lol) {
+      localStorage.stats = JSON.stringify(lol)
+      thiss.props.updateListing(thiss.props.listing)
+    })
   },
 
   render: function(){
@@ -50,15 +64,15 @@ var listing = React.createClass({
         <li>
           <a href="#" onClick={this.clicked} data-view="" className="truck_listing item-link item-content">
             <div className="item-media">
-              <img src="" width="80" src={lst.get('small_pic')}/>
+              <img src="" width="80" src={lst.get('small_picture')}/>
             </div>
             <div className="item-inner">
               <div className="item-title-row">
-                <div className="item-title">{lst.get('property1')}</div>
-                <div className="item-after">{lst.get('property2')}</div>
+                <div className="item-title">{lst.get('title')}</div>
+                <div className="item-after">{lst.get('price')}</div>
               </div>
               <div className="item-subtitle">&nbsp;</div>
-              <div className="item-text">{lst.get('property3')}</div>
+              <div className="item-text">{lst.get('short_description')}</div>
             </div>
           </a>
         </li>
@@ -83,9 +97,11 @@ var App = React.createClass({
       $('#view-2').hide()
     });
   },
+
   updateListing: function(listing){
     this.setState({currentListing: listing})
   },
+
   render: function(){
     return (
     <div style={{height:"100%"}}>
